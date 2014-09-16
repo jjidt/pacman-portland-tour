@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+    <script type="text/javascript" src="javascripts/jquery-1.11.1.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEZG6aGFZ1UizWUzwsfjzqdhRe_KEa_v4">
+    </script>
+    <script type="text/javascript">
+
+      var outerData;
+      var oldLat;
+      var oldLong;
+      var map;
+      var marker;
+      var counter;
+      var latSlice;
+      var longSlice;
+      var latChunk;
+      var longChunk;
+      var newLat = 45.52;
+      var newLong = -122.67;
+      var train;
+      var frames = 480;
+
+      var initialize = function () {
+        var mapOptions = {
+          center: { lat: 45.52, lng: -122.67 },
+          zoom: 20
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+
+        marker = new google.maps.Marker({
+          position: { lat: -122.67, lng: 45.52 },
+          map: map,
+          title: "hello world",
+          icon: "pacsmall.png"
+        });
+
+        markerClosed = new google.maps.Marker({
+          position: { lat: -122.67, lng: 45.52 },
+          map: null,
+          title: "Pac",
+          icon: "pacclosesmall.png"
+        });
+
+        marker.setMap(map);
+        // marker.setPosition({lat: newLat, lng: newLong});
+      };
+
+      var apiCall = function(){
+        return $.ajax({
+              url: 'http://developer.trimet.org/beta/v2/vehicles/routes/200/appID/C51188C647CCD89A8DCE3BBCB',
+              type: 'GET',
+              crossDomain: true,
+              dataType: 'jsonp',
+              success: function() {},
+              error: function() {},
+            });
+      };
+
+      $(document).ready(function(){
+        // http://developer.trimet.org/beta/v2/vehicles
+        // $.get('http://developer.trimet.org/ws/V1/arrivals/locIDs/6849,6850/appID/C51188C647CCD89A8DCE3BBCB', function callback(data, message) {
+
+          apiCall().done(function(data){
+            train = data.resultSet.vehicle[data.resultSet.vehicle.length - 4];
+            newLat = train.latitude;
+            newLong = train.longitude;
+            var doAjax = function() {
+              apiCall().done(function(data){
+                  outerData = data;
+                  train = data.resultSet.vehicle[data.resultSet.vehicle.length - 4];
+                  oldLat = newLat;
+                  oldLong = newLong;
+                  newLat = train.latitude;
+                  newLong = train.longitude;
+                  counter = 1;
+                  var updateMarker = function(){
+                    if (counter <= frames) {
+                      latSlice = (newLat - oldLat)/frames;
+                      longSlice = (newLong - oldLong)/frames;
+                      latChunk = oldLat + (latSlice*counter);
+                      longChunk = oldLong + (longSlice*counter);
+                      marker.setPosition({lat: latChunk, lng: longChunk});
+                      markerClosed.setPosition({lat: latChunk, lng: longChunk});
+                        if (newLat !== oldLat && newLong !== oldLong) {
+                          if (counter%2 === 0){
+                            marker.setMap(null);
+                            markerClosed.setMap(map);
+                          } else {
+                            marker.setMap(map);
+                            markerClosed.setMap(null);
+                          }
+                        }
+                      counter++;
+                      map.setCenter({lat: latChunk, lng: longChunk})
+                    }
+                    else {
+                      clearInterval(interval);
+                      doAjax();
+                    }
+                  };
+                  var interval = setInterval(function(){updateMarker()}, 30000/frames);
+              });
+          };
+        initialize();
+        doAjax();
+      });
+    });
+
+    </script>
+  </head>
+  <body>
+<div id="map-canvas"></div>
+  </body>
+</html>
