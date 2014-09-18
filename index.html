@@ -4,7 +4,8 @@
     <style type="text/css">
       html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
     </style>
-    <script type="text/javascript" src="javascripts/jquery-1.11.1.js"></script>
+    <link type="text/css" rel="stylesheet" href="styles/stylesheet.css" />
+    <script type="text/javascript" src="jquery-1.11.1.js"></script>
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEZG6aGFZ1UizWUzwsfjzqdhRe_KEa_v4">
     </script>
@@ -28,7 +29,8 @@
       var initialize = function () {
         var mapOptions = {
           center: { lat: 45.52, lng: -122.67 },
-          zoom: 20
+          zoom: 20,
+          mapTypeId: google.maps.MapTypeId.SATELLITE
         };
         map = new google.maps.Map(document.getElementById('map-canvas'),
             mapOptions);
@@ -65,15 +67,14 @@
       $(document).ready(function(){
         // http://developer.trimet.org/beta/v2/vehicles
         // $.get('http://developer.trimet.org/ws/V1/arrivals/locIDs/6849,6850/appID/C51188C647CCD89A8DCE3BBCB', function callback(data, message) {
-
           apiCall().done(function(data){
-            train = data.resultSet.vehicle[data.resultSet.vehicle.length - 4];
+            train = data.resultSet.vehicle[data.resultSet.vehicle.length - 1];
             newLat = train.latitude;
             newLong = train.longitude;
             var doAjax = function() {
               apiCall().done(function(data){
                   outerData = data;
-                  train = data.resultSet.vehicle[data.resultSet.vehicle.length - 4];
+                  train = data.resultSet.vehicle[data.resultSet.vehicle.length - 1];
                   oldLat = newLat;
                   oldLong = newLong;
                   newLat = train.latitude;
@@ -100,6 +101,8 @@
                       map.setCenter({lat: latChunk, lng: longChunk})
                     }
                     else {
+                      $('#map-canvas').css({"visibility": "visible"});
+                      $('#loading').css({"display": "none"})
                       clearInterval(interval);
                       doAjax();
                     }
@@ -115,6 +118,12 @@
     </script>
   </head>
   <body>
-<div id="map-canvas"></div>
+    <h1>Pacman Tour of PDX</h1>
+    <div class="loadingPacman"></div>
+    <h3>Follow the green line train in real time!!!! </h3>
+    <h3 class="right">By J.J. Idt</h3>
+    <h3 id="loading">Loading</h3>
+
+    <div id="map-canvas"></div>
   </body>
 </html>

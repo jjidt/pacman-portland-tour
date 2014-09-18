@@ -1,0 +1,101 @@
+@font-face {
+    font-family: pacman;
+    src: url(PAC-FONT.TTF);
+}
+
+body {
+	background-color: black;
+}
+
+h1 {
+	text-align: center;
+	font-family: pacman;
+	color: yellow;
+	font-size: 30px;
+}
+h3 {
+	text-align: center;
+	font-family: pacman;
+	color: yellow;
+}
+
+#map-canvas {
+	visibility: hidden;
+}
+
+body{
+  background: #123;
+  text-align: center;
+}
+
+.loadingPacman{
+  height: 40px;
+  width: 40px;
+  display: inline-block;
+  position: relative;
+}
+.loadingPacman:before {
+  content: ' ';
+  display: block;
+  width: 0px;
+  height: 0px;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #789;
+  border-left: 20px solid #789;
+  border-bottom: 20px solid #789;
+  border-radius: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-animation:pacman .5s linear infinite;
+  -moz-animation:pacman .5s linear infinite;
+  animation:pacman .5s linear infinite;
+}
+.loadingPacman:after{
+  content: ' ';
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  margin: -2px;
+  background: #789;
+  height: 4px;
+  width: 4px;
+  -webkit-animation:pacmanfood .5s linear infinite;
+  -moz-animation:pacmanfood .5s linear infinite;
+  animation:pacmanfood .5s linear infinite;
+}
+@-moz-keyframes pacmanfood {
+  0% { right: -20px; } 
+  100% { right: 20px; } 
+}
+@-webkit-keyframes pacmanfood {
+  0% { right: -20px; } 
+  100% { right: 20px; } 
+}
+@keyframes pacmanfood {
+  0% { right: -20px; } 
+  100% { right: 20px; } 
+}
+@-moz-keyframes pacman {
+  0% { border-right: 20px solid transparent; } 
+  59% { border-right: 20px solid transparent; } 
+  60% { border-right: 20px solid #789; } 
+  100% { border-right: 20px solid #789; }
+}
+@-webkit-keyframes pacman {
+  0% { border-right: 20px solid transparent; } 
+  59% { border-right: 20px solid transparent; } 
+  60% { border-right: 20px solid #789; } 
+  100% { border-right: 20px solid #789; } 
+}
+@keyframes pacman {
+  0% { border-right: 20px solid transparent; } 
+  59% { border-right: 20px solid transparent; } 
+  60% { border-right: 20px solid #789; } 
+  100% { border-right: 20px solid #789; }
+}
+
+.right {
+	text-align: right;
+}
